@@ -1,0 +1,25 @@
+{
+  "name": "mp-address-book-server",
+  "version": "1.0.0",
+  "description": "* [Koa2中文文档](https://koa.bootcss.com/)\r     * [Koa中间件资源列表](https://github.com/koajs/koa/wiki)\r     * [Koa-Router](https://github.com/alexmingoia/koa-router)\r * [nodeJS Sqlite3说明文档](https://github.com/mapbox/node-sqlite3/wiki)\r     * [Sqlite3可视化工具：sqlitestudio](https://sqlitestudio.pl/index.rvt)",
+  "main": "index.js",
+  "dependencies": {
+    "koa": "^2.5.0",
+    "koa-router": "^7.4.0",
+    "sqlite3": "^3.1.13"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/makeup1122/mp-address-book-server.git"
+  },
+  "author": "makeup1122",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/makeup1122/mp-address-book-server/issues"
+  },
+  "homepage": "https://github.com/makeup1122/mp-address-book-server#readme"
+}
