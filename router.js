@@ -37,4 +37,10 @@ router.del('/address/myself', function(ctx, next){
     // TODO 
 })
 
+/** 
+ * 获取OPENID
+*/
+router.post('/wx/encryptOpenid',function(ctx, next){
+    
+})
 module.exports = router
