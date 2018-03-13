@@ -27,13 +27,12 @@ router.get('/address/myself', function(ctx, next){
  * 更新个人信息
  */
 router.post('/address/myself', async function(ctx, next){
+    console.log(ctx.request.body);
     let data = {
-        $truename:'dd', 
-        $mobile: '123' ,
-        $city: 'ddddddd',
-        $recent: '1231fsdf2f222',
-        $create_time: '333', 
-        $update_time: 'daqweqeqweq',
+        $truename: ctx.request.body.truename, 
+        $mobile: ctx.request.body.mobile, 
+        $city: ctx.request.body.city, 
+        $recent: ctx.request.body.recent, 
         $wx_id: '312312',
         $wx_name: '321312'
     };

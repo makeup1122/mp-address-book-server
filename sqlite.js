@@ -37,6 +37,8 @@ exports.updateByName = function(name, data){
 // 创建新用户
 exports.insertInfo = function(data) {
     return new Promise(function(resolve, reject){
+        data.$create_time = new Date().getTime();
+        data.$update_time = '';
         db.run('INSERT INTO content VALUES (null, $truename, $mobile , $city, $recent, $create_time, $update_time, $wx_id, $wx_name);' ,data, function(err, row){
             if(!err){
                 resolve(this.lastID);
