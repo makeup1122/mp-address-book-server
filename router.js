@@ -26,8 +26,25 @@ router.get('/address/myself', function(ctx, next){
 /**
  * 更新个人信息
  */
-router.post('/address/myself', function(ctx, next){
-
+router.post('/address/myself', async function(ctx, next){
+    let data = {
+        $truename:'dd', 
+        $mobile: '123' ,
+        $city: 'ddddddd',
+        $recent: '1231fsdf2f222',
+        $create_time: '333', 
+        $update_time: 'daqweqeqweq',
+        $wx_id: '312312',
+        $wx_name: '321312'
+    };
+    await db.insertInfo(data).then(function(lastID){
+        ctx.body= {
+            lastID: lastID
+        }
+    }).catch(function(err){
+        console.log(err);
+    })
+    next();
 })
 
 /**
