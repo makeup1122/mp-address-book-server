@@ -4,7 +4,7 @@ var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('address-book.db',sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE)
 
 // 创建表结构
-db.run('CREATE TABLE content(id INTEGER PRIMARY KEY AUTOINCREMENT, truename TEXT, mobile TEXT, city TEXT, recent TEXT, create_time INT, update_time INT, wx_id TEXT, wx_name TEXT);',
+db.run('CREATE TABLE content(id INTEGER PRIMARY KEY AUTOINCREMENT, truename TEXT, mobile TEXT, city TEXT, recent TEXT, create_time INT, update_time INT, wx_openid TEXT, wx_sessionkey TEXT);',
     {},
     function(error){
         if(!error){
@@ -46,5 +46,14 @@ exports.insertInfo = function(data) {
                 reject(err);
             }
         })
+    })
+}
+exports.createOrNothingTODO = function({session_key='',openid=''}){
+    db.run('select * from content where openid = $openid',{$openid:openid},function(err,rows){
+        if(!err){
+            console.log(rows)
+        }else{
+            
+        }
     })
 }

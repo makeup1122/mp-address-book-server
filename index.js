@@ -1,6 +1,7 @@
 const Koa = require('koa')
 const koaBody = require('koa-body');
 const router = require('./router')
+const config = require('./config')
 // 注册Koa服务
 const app = new Koa();
 
@@ -15,4 +16,4 @@ app.on('error',err=> {
 })
 
 // 监听端口
-app.listen(3000);
+app.listen(config.PORT);

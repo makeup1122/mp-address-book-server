@@ -1,5 +1,7 @@
 const Router = require('koa-router')
 const db = require("./sqlite")
+const wx = require("./wx")
+
 // 路由实例
 const router = new Router()
 
@@ -27,7 +29,10 @@ router.get('/address/myself', function(ctx, next){
  * 更新个人信息
  */
 router.post('/address/myself', async function(ctx, next){
-    console.log(ctx.request.body);
+    let rawData = JSON.parse(ctx.request.body.wx_rawData);
+    wx.decryptData(rawData.encryptedData,rawData.iv).then( cryptedData=>{
+        console.log(cryptedData)
+    })
     let data = {
         $truename: ctx.request.body.truename, 
         $mobile: ctx.request.body.mobile, 
@@ -58,5 +63,15 @@ router.del('/address/myself', function(ctx, next){
 */
 router.post('/wx/encryptOpenid',function(ctx, next){
     
+})
+
+router.get('/wx/onLogin', async function(ctx, next){
+    let code = ctx.request.query.code;
+    let result = null;
+    await wx.getSessionKey(code).then(function(res){
+        result = JSON.parse(res);
+    })
+    await db.createOrNothingTODO(result)
+    ctx.body = 'ok'
 })
 module.exports = router
