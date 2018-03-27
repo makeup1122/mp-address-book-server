@@ -12,7 +12,7 @@ router.all('/*', async function(ctx, next){
 })
 
 /**
- * 获取全部地址列表(暂不分页)
+ * 获取全部地址列表
  */
 router.get('/address/list', async function(ctx, next){
     await db.getAll({page:1}).then(function(rows){ctx.body=rows}).catch(function(err){result = err;})
