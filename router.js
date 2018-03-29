@@ -5,73 +5,67 @@ const wx = require("./wx")
 // 路由实例
 const router = new Router()
 
+// 记录全部请求
 router.all('/*', async function(ctx, next){
     await next()
     console.log(ctx.method+" - " + ctx.path +"   [" + ctx.status + "]   " + JSON.stringify(ctx.body))
-    // 通用全匹配规则
 })
 
-/**
- * 获取全部地址列表
- */
+// 根据openId获取通讯录列表
+router.get('/address/tables', async function(ctx, next){
+    await db.getTables(ctx.request.body).then(function(rows){ctx.response.body=rows}).catch(function(err){console.log(err)})
+    next();
+})
+
+// 根据openId插入可获得通讯录信息
+router.post('/address/tables', async function(ctx, next){
+    await db.insertTables(ctx.request.body).then(async function(body, next){
+        // 重新获取可获得的通讯录列表并返回
+        await db.getTables(body).then(function(rows){ctx.response.body=rows}).catch(function(err){console.log(err)})
+        next()
+        // 创建同名的通讯录表结构
+        await db.createTable(body).then(function(rows){console.log(rows)}).catch(function(err){console.log(err)})
+        next()
+    }).catch(function(err){console.log(err)})
+    next()
+})
+
+// 获取选定的通讯录详细信息
 router.get('/address/list', async function(ctx, next){
-    await db.getAll({page:1}).then(function(rows){ctx.body=rows}).catch(function(err){result = err;})
+    await db.getDetail(ctx.request.body).then(function(rows){ctx.response.body=rows}).catch(function(err){result = err;})
     next();
 })
 
-/**
- * 获取个人信息
- */
-router.get('/address/myself', function(ctx, next){
-})
-
-/**
- * 更新个人信息
- */
-router.post('/address/myself', async function(ctx, next){
-    let rawData = JSON.parse(ctx.request.body.wx_rawData);
-    wx.decryptData(rawData.encryptedData,rawData.iv).then( cryptedData=>{
-        console.log(cryptedData)
-    })
-    let data = {
-        $truename: ctx.request.body.truename, 
-        $mobile: ctx.request.body.mobile, 
-        $city: ctx.request.body.city, 
-        $recent: ctx.request.body.recent, 
-        $wx_id: '312312',
-        $wx_name: '321312'
-    };
-    await db.insertInfo(data).then(function(lastID){
-        ctx.body= {
-            lastID: lastID
-        }
-    }).catch(function(err){
-        console.log(err);
-    })
+// 向选定的通讯录中插入新的详细信息
+router.post('/address/list', async function(ctx, next){
+    await db.insertDetail(ctx.request.body).then(async function(body, next){
+        // 重新获取选定的通讯录中全部的详细信息
+        await db.getDetail(body).then(function(rows){ctx.response.body=rows}).catch(function(err){result = err;})
+        next();
+    }).catch(function(err){result = err;})
     next();
 })
 
-/**
- * 删除个人信息
- */
-router.del('/address/myself', function(ctx, next){
-    // TODO 
+// 修改选定的通讯录中的详细信息
+router.put('/address/list', async function(ctx, next){
+    await db.updateDetail(ctx.recent.body).then(async function(body, next){
+        // 重新获取选定的通讯录中全部的详细信息
+        await db.getDetail(body).then(function(rows){ctx.response.body=rows}).catch(function(err){result = err;})
+        next();
+    }).catch(function(err){result = err;})
+    next();
 })
 
-/** 
- * 获取OPENID
-*/
-router.post('/wx/encryptOpenid',function(ctx, next){
-    
-})
-
+// 根据code获取openid
 router.get('/wx/onLogin', async function(ctx, next){
-    let code = ctx.request.query.code;
+    let code = ctx.request.body.code;
     let result = null;
     await wx.getSessionKey(code).then(function(res){
-        result = JSON.parse(res);
+        result = JSON.parse(res)
+        ctx.response.body = result
+    }).catch(function(err){
+        console.log(err)
     })
-    await db.createOrNothingTODO(result)
-    ctx.body = 'ok'
 })
+
 module.exports = router
