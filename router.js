@@ -28,11 +28,19 @@ router.post('/address/tables', async function(ctx, next){
     next()
 })
 
+// 通过分享增加可获得通讯录信息
+router.post('/address/share', async function(ctx, next){
+    await db.shareTables(ctx.request.body).then(function(rows){
+        ctx.response.body=rows
+    }).catch(function(err){console.log(err)})
+    next();
+})
+
 // 获取选定的通讯录详细信息
 router.get('/address/list', async function(ctx, next){
     await db.getDetail(ctx.request.query).then(function(rows){
         ctx.response.body=rows
-    }).catch(function(err){console.log(err)})
+	}).catch(function(err){console.log(err)})
     next();
 })
 
@@ -40,7 +48,7 @@ router.get('/address/list', async function(ctx, next){
 router.post('/address/list', async function(ctx, next){
     console.log(ctx.request.body)
     await db.insertDetail(ctx.request.body).then(function(rows){
-		ctx.response.body=rows
+        ctx.response.body=rows
     }).catch(function(err){console.log(err)})
     next();
 })
