@@ -58,3 +58,4 @@ typings/
 .env
 # 本地数据库
 address-book.db
+addressbook.db
