@@ -1,12 +1,26 @@
 var sqlite3 = require('sqlite3').verbose();
 
 // 创建或打开数据库
-var db = new sqlite3.Database('address-book.db',sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE)
+var db = new sqlite3.Database('addressbook.db',sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE)
 
 // 创建表结构
-db.run('CREATE TABLE tablelist(primary INTEGER PRIMARY KEY AUTOINCREMENT, openid TEXT, tablename TEXT);', {},
+db.run('CREATE TABLE IF NOT EXISTS tablelist (xid INTEGER PRIMARY KEY AUTOINCREMENT, tablename TEXT);', [],
     function(err){
-        if(!err){
+        if(err){
+            console.log(err);
+        }
+    });
+
+db.run('CREATE TABLE IF NOT EXISTS availablelist (uid INTEGER PRIMARY KEY AUTOINCREMENT, openid TEXT, tablexid INTERGER);', [],
+    function(err){
+        if(err){
+            console.log(err);
+        }
+    });
+
+db.run('CREATE TABLE IF NOT EXISTS detaillist (xid INTEGER PRIMARY KEY AUTOINCREMENT, tablexid INTERGER, name TEXT, mobile TEXT, city TEXT, status TEXT);', [],
+    function(err){
+        if(err){
             console.log(err);
         }
     });
@@ -14,7 +28,7 @@ db.run('CREATE TABLE tablelist(primary INTEGER PRIMARY KEY AUTOINCREMENT, openid
 // 根据openId获取通讯录列表
 exports.getTables = function(body){
     return new Promise(function(resolve,reject){
-        db.run('SELECT primary,tableName FROM tablelist WHERE openid=$openid;', body, function(err,rows){
+        db.all('SELECT xid,tablename FROM tablelist INNER JOIN availablelist ON tablelist.xid = availablelist.tablexid and availablelist.openid=' + '"' + body.openid + '"', function(err,rows){
             if(!err){
                 resolve(rows)
             }else{
@@ -27,36 +41,71 @@ exports.getTables = function(body){
 // 根据openId插入可获得通讯录信息
 exports.insertTables = function(body){
     return new Promise(function(resolve,reject){
-        db.run('INSERT INTO tablelist VALUES (null, $openid, $tablename);', body, function(err,rows){
-            if(!err){
-                console.log(rows)
-                resolve(body)
-            }else{
-                reject(err)
-            }
+        db.serialize(function(){
+            // 将可获得的新表插入tablelist中，获得表的真名（tableXid），用户提交的是表的别名（tableName）
+            db.run('INSERT INTO tablelist (tablename) VALUES (' + '"' + body.tablename + '")', function(err){
+                if(!err){
+                    console.log(this)
+                    // 将可获得的新表的真名（tableXid）插入availablelist中
+                    db.run('INSERT INTO availablelist (openid,tablexid) VALUES (' + '"' + body.openid + '","' + this.lastID + '");', function(err){
+                        if(!err){
+                            console.log(this)
+                        }else{
+                            console.log(err)
+                        }
+                    })        
+                }else{
+                    console.log(err)
+                }
+            })
+            // 重新获取tablelist中的可获得表单
+            db.all('SELECT xid,tablename FROM tablelist INNER JOIN availablelist ON tablelist.xid = availablelist.tablexid and availablelist.openid=' + '"' + body.openid + '"', function(err,rows){
+                if(!err){
+                    resolve(rows)
+                    console.log(rows)
+                }else{
+                    reject(err)
+                    console.log(err)
+                }
+            })
         })
     })
 }
 
-// 创建新的通讯录表结构
-exports.createTable = function(body){
+// 通过分享增加可获得通讯录信息
+exports.shareTables = function(body){
     return new Promise(function(resolve,reject){
-        db.run('CREATE TABLE $tablename(primary INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, mobile TEXT, city TEXT, status TEXT);', body,
-            function(err, rows){
-                if(!err){
-                    resolve(rows)
+        // 异步获取分享的通讯录详细信息
+        db.all('SELECT xid,name,mobile,city,status FROM detaillist WHERE tablexid=' + '"' + body.tablexid + '";', function(err, rows){
+            if(!err){
+                resolve(rows)
+            }else{
+                reject(err)
+            }
+        })
+        // 异步检测openid的可获取通讯录的存在，不存在则添加
+        db.get('SELECT openid,tablexid FROM availablelist where openid=' + '"' + body.openid + '"' + ' and tablexid=' + '"' + body.tablexid + '";', function(err, rows){
+            if(!err){
+                if(!rows){
+                    db.run('INSERT INTO availablelist (openid,tablexid) VALUES (' + '"' + body.openid + '","' + body.tablexid + '");', function(err){
+                        if(!err){
+                            console.log(this)
+                        }else{
+                            console.log(err)
+                        }
+                    })
                 }else{
-                    reject(err)
+                    console.log(rows)
                 }
             }
-        )
+        })
     })
 }
 
 // 获取选定的通讯录详细信息
 exports.getDetail = function(body){
     return new Promise(function(resolve,reject){
-        db.run('SELECT primary,name,mobile,city,status FROM $tablename;', body, function(err, rows){
+        db.all('SELECT xid,name,mobile,city,status FROM detaillist WHERE tablexid=' + '"' + body.tablexid + '";', function(err, rows){
             if(!err){
                 resolve(rows)
             }else{
@@ -68,14 +117,26 @@ exports.getDetail = function(body){
 
 // 插入新的通讯录详细信息
 exports.insertDetail = function(body){
-    return new Promise(function(resolve,reject){
-        db.run('INSERT INTO $tablename VALUES (null, $name, $mobile, $city, $status)', body, function(err, rows){
-            if(!err){
-                console.log(rows)
-                resolve(body)
-            }else{
-                reject(err)
-            }
+    return new Promise(function(resolve,reject){ 
+        db.serialize(function(){
+            // 将新的详细信息插入选定表中
+            db.run('INSERT INTO detaillist (tablexid, name, mobile, city, status) VALUES (' + '"' + body[0].tablexid  + '","' + body[0].name + '","' + body[0].mobile +'","' +  body[0].city +'","' +  body[0].status + '")', function(err){
+                if(!err){
+                    console.log(this)
+                }else{
+                    console.log(err)
+                }
+            })
+            // 重新获取选定表的全部内容
+            db.all('SELECT xid,name,mobile,city,status FROM detaillist WHERE tablexid=' + '"' + body[0].tablexid + '";', function(err, rows){
+                if(!err){
+                    console.log(rows)
+                    resolve(rows)
+                }else{
+                    console.log(err)
+                    reject(err)
+                }
+            })
         })
     })
 }
@@ -83,37 +144,26 @@ exports.insertDetail = function(body){
 // 修改选定的通讯录中的详细信息
 exports.updateDetail = function(body){
     return new Promise(function(resolve,reject){
-        db.run('UPDATE $tablename SET $modifykey=$newcontent where primary=$modifyid', body, function(err, rows){
-            if(!err){
-                console.log(rows)
-                resolve(body)
-            }else{
-                reject(err)
-            }
+        db.serialize(function(){
+            // 根据新的详细信息修改选定表
+            db.run('UPDATE detaillist SET ' + body.modifykey + '=' + '"' + body.newcontent + '"' + ' where xid=' + body.modifyid, function(err){
+                if(!err){
+                    console.log(this)
+                }else{
+                    console.log(err)
+                }
+            })
+            // 重新获取选定表的全部内容
+            db.all('SELECT xid,name,mobile,city,status FROM detaillist WHERE tablexid=' + '"' + body.tablexid + '";', function(err, rows){
+                if(!err){ 
+                    console.log(rows)
+                    resolve(rows)
+                }else{
+                    console.log(err)
+                    reject(err)
+                }
+            })
         })
     })
 }
 
-// 创建新用户
-exports.insertInfo = function(data) {
-    return new Promise(function(resolve, reject){
-        data.$create_time = new Date().getTime();
-        data.$update_time = '';
-        db.run('INSERT INTO content VALUES (null, $truename, $mobile , $city, $recent, $create_time, $update_time, $wx_id, $wx_name);', data, function(err, row){
-            if(!err){
-                resolve(this.lastID);
-            }else{
-                reject(err);
-            }
-        })
-    })
-}
-exports.createOrNothingTODO = function({session_key='',openid=''}){
-    db.run('select * from content where openid = $openid',{$openid:openid},function(err,rows){
-        if(!err){
-            console.log(rows)
-        }else{
-            
-        }
-    })
-}
