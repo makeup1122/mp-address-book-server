@@ -131,28 +131,15 @@ exports.shareTables = function(body){
     })
 }
 
-// 插入新的通讯录详细信息
-exports.insertDetail = function(body){
-    return new Promise(function(resolve,reject){ 
-        db.serialize(function(){
-            // 将新的详细信息插入选定表中
-            db.run('INSERT INTO detaillist (tablexid, name, mobile, city, status) VALUES (' + '"' + body[0].tablexid  + '","' + body[0].name + '","' + body[0].mobile +'","' +  body[0].city +'","' +  body[0].status + '")', function(err){
-                if(!err){
-                    console.log(this)
-                }else{
-                    console.log(err)
-                }
-            })
-            // 重新获取选定表的全部内容
-            db.all('SELECT xid,name,mobile,city,status FROM detaillist WHERE tablexid=' + '"' + body[0].tablexid + '";', function(err, rows){
-                if(!err){
-                    console.log(rows)
-                    resolve(rows)
-                }else{
-                    console.log(err)
-                    reject(err)
-                }
-            })
+// 获取选定的通讯录详细信息 
+exports.getDetail = function(body){
+    return new Promise(function(resolve,reject){
+        db.all('SELECT xid,name,mobile,city,status FROM detaillist WHERE tablexid=' + '"' + body.tablexid + '";', function(err, rows){
+            if(!err){
+                resolve(rows)
+            }else{
+                reject(err)
+            }
         })
     })
 }
