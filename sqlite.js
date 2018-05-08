@@ -46,7 +46,7 @@ exports.insertTables = function(body){
             db.run('INSERT INTO tablelist (tablename) VALUES (' + '"' + body.tablename + '")', function(err){
                 if(!err){
                     console.log(this)
-                    // 将可获得的新表的真名（tableXid）插入availablelist中
+					// 将可获得的新表的真名（tableXid）插入availablelist中
                     db.run('INSERT INTO availablelist (openid,tablexid) VALUES (' + '"' + body.openid + '","' + this.lastID + '");', function(err){
                         if(!err){
                             console.log(this)
@@ -102,14 +102,30 @@ exports.shareTables = function(body){
     })
 }
 
-// 获取选定的通讯录详细信息
-exports.getDetail = function(body){
+// 通过分享增加可获得通讯录信息
+exports.shareTables = function(body){
     return new Promise(function(resolve,reject){
         db.all('SELECT xid,name,mobile,city,status FROM detaillist WHERE tablexid=' + '"' + body.tablexid + '";', function(err, rows){
             if(!err){
                 resolve(rows)
             }else{
                 reject(err)
+            }
+        })
+        // 异步检测openid的可获取通讯录的存在，不存在则添加
+        db.get('SELECT openid,tablexid FROM availablelist where openid=' + '"' + body.openid + '"' + ' and tablexid=' + '"' + body.tablexid + '";', function(err, rows){
+            if(!err){
+                if(!rows){
+                    db.run('INSERT INTO availablelist (openid,tablexid) VALUES (' + '"' + body.openid + '","' + body.tablexid + '");', function(err){
+                        if(!err){
+                            console.log(this)
+                        }else{
+                            console.log(err)
+                        }
+                    })
+                }else{
+                    console.log(rows)
+                }
             }
         })
     })
@@ -141,8 +157,8 @@ exports.insertDetail = function(body){
     })
 }
 
-// 修改选定的通讯录中的详细信息
-exports.updateDetail = function(body){
+// 插入新的通讯录详细信息
+exports.insertDetail = function(body){
     return new Promise(function(resolve,reject){
         db.serialize(function(){
             // 根据新的详细信息修改选定表
@@ -167,3 +183,28 @@ exports.updateDetail = function(body){
     })
 }
 
+// 修改选定的通讯录中的详细信息
+exports.updateDetail = function(body){
+    return new Promise(function(resolve,reject){
+        db.serialize(function(){
+            // 根据新的详细信息修改选定表
+            db.run('UPDATE ' + '"' + body.tablexid + '"' + ' SET ' + body.modifykey + '=' + '"' + body.newcontent + '"' + ' where xid=' + body.modifyid, function(err){
+                if(!err){
+                    console.log(this)
+                }else{
+                    console.log(err)
+                }
+            })
+            // 重新获取选定表的全部内容
+            db.all('SELECT xid,name,mobile,city,status FROM ' + '"' + body.tablexid + '"', function(err, rows){
+				if(!err){
+                    console.log(rows)
+                    resolve(rows)
+                }else{
+                    console.log(err)
+                    reject(err)
+                }
+            })
+        })
+    })
+}

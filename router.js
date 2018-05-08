@@ -14,8 +14,8 @@ router.all('/*', async function(ctx, next){
 // 根据openId获取通讯录列表
 router.get('/address/tables', async function(ctx, next){
     await db.getTables(ctx.request.query).then(function(rows){
-	console.log(rows)
-	ctx.response.body=rows
+        console.log(rows)
+        ctx.response.body=rows
     }).catch(function(err){console.log(err)})
     next();
 })
@@ -40,7 +40,7 @@ router.post('/address/share', async function(ctx, next){
 router.get('/address/list', async function(ctx, next){
     await db.getDetail(ctx.request.query).then(function(rows){
         ctx.response.body=rows
-    }).catch(function(err){console.log(err)})
+	}).catch(function(err){console.log(err)})
     next();
 })
 
@@ -65,7 +65,7 @@ router.put('/address/list', async function(ctx, next){
 router.get('/wx/onLogin', async function(ctx, next){
     let code = ctx.request.query.code;
     await wx.getSessionKey(code).then(function(res){
-	console.log(res)
+        console.log(res)
         ctx.response.body = res
     }).catch(function(err){
         console.log(err)
