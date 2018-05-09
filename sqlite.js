@@ -149,7 +149,7 @@ exports.insertDetail = function(body){
     return new Promise(function(resolve,reject){
         db.serialize(function(){
             // 将新的详细信息插入表中
-            db.run('INSERT INTO detaillist (tablexid, name, mobile, city, status) VALUES (' + '"' + body[0].tablexid + '","' + body[0].name + '","' + body[0].mobile + '","' + body[0].city + '","' + body[0].status +'";', function(err){
+            db.run('INSERT INTO detaillist (tablexid, name, mobile, city, status) VALUES (' + '"' + body[0].tablexid + '","' + body[0].name + '","' + body[0].mobile + '","' + body[0].city + '","' + body[0].status +'");', function(err){
                 if(!err){
                     console.log(this)
                 }else{
