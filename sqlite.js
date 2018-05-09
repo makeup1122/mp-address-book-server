@@ -148,8 +148,8 @@ exports.getDetail = function(body){
 exports.insertDetail = function(body){
     return new Promise(function(resolve,reject){
         db.serialize(function(){
-            // 根据新的详细信息修改选定表
-            db.run('UPDATE detaillist SET ' + body.modifykey + '=' + '"' + body.newcontent + '"' + ' where xid=' + body.modifyid, function(err){
+            // 将新的详细信息插入表中
+            db.run('INSERT INTO detaillist (tablexid, name, mobile, city, status) VALUES (' + '"' + body[0].tablexid + '","' + body[0].name + '","' + body[0].mobile + '","' + body[0].city + '","' + body[0].status +'";', function(err){
                 if(!err){
                     console.log(this)
                 }else{
@@ -157,7 +157,7 @@ exports.insertDetail = function(body){
                 }
             })
             // 重新获取选定表的全部内容
-            db.all('SELECT xid,name,mobile,city,status FROM detaillist WHERE tablexid=' + '"' + body.tablexid + '";', function(err, rows){
+            db.all('SELECT xid,name,mobile,city,status FROM detaillist WHERE tablexid=' + '"' + body[0].tablexid + '";', function(err, rows){
                 if(!err){ 
                     console.log(rows)
                     resolve(rows)
@@ -175,7 +175,7 @@ exports.updateDetail = function(body){
     return new Promise(function(resolve,reject){
         db.serialize(function(){
             // 根据新的详细信息修改选定表
-            db.run('UPDATE ' + '"' + body.tablexid + '"' + ' SET ' + body.modifykey + '=' + '"' + body.newcontent + '"' + ' where xid=' + body.modifyid, function(err){
+            db.run('UPDATE detaillist SET ' + body.modifykey + '=' + '"' + body.newcontent + '"' + ' where xid=' + '"' + body.modifyid + '";', function(err){
                 if(!err){
                     console.log(this)
                 }else{
@@ -183,7 +183,7 @@ exports.updateDetail = function(body){
                 }
             })
             // 重新获取选定表的全部内容
-            db.all('SELECT xid,name,mobile,city,status FROM ' + '"' + body.tablexid + '"', function(err, rows){
+            db.all('SELECT xid,name,mobile,city,status FROM detaillist WHERE tablexid=' + '"' + body.tablexid + '";', function(err, rows){
 				if(!err){
                     console.log(rows)
                     resolve(rows)
