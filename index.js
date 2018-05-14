@@ -1,6 +1,6 @@
 const Koa = require('koa')
 const koaBody = require('koa-body');
-const router = require('./router')
+const router = require('./router/index')
 const config = require('./config')
 // 注册Koa服务
 const app = new Koa();
