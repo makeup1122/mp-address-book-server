@@ -1,15 +1,17 @@
 // import Vue from 'vue'
-const Vue = require('vue')
+import Vue from "vue";
 // import { createRouter } from './router/index'
-const createRouter = require('./router/index')
+import createRouter from "./router/index";
 // import App from './App.vue'
-const App = require('./App.vue')
-module.exports = function createApp () {
-	const router = createRouter()
+import App from "./App.vue";
+export default function createApp() {
+	const router = createRouter();
+	console.log('router.currentRoute: ' + router.currentRoute);
+	console.log(router.currentRoute);
 	const app = new Vue({
 		router,
 		// 根实例简单的渲染应用程序组件。
 		render: h => h(App)
-	})
-	return { app, router }
+	});
+	return { app, router };
 }
