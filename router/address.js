@@ -7,7 +7,6 @@ const router = new Router()
 // 记录全部请求
 router.all('/*', async function(ctx, next){
     await next()
-    console.log(new Date() + ' :' +ctx.method+" - " + ctx.path +"   [" + ctx.status + "]   " + JSON.stringify(ctx.body))
 })
 
 // 根据openId获取通讯录列表
