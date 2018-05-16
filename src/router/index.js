@@ -11,11 +11,11 @@ Vue.use(VueRouter)
 export default function createRouter() {
 	return new VueRouter({
 		mode: 'history',
-		base: '/web/',
+		// base: '/web/',
 		routes: [
 			// ...
 			{
-				path: '/index',
+				path: '/web/index',
 				name: 'Index',
 				meta: {
 					role: 'super-admin'

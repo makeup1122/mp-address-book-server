@@ -11,15 +11,16 @@ const renderer = createBundleRenderer(serverBundleJson, {
     template: require('fs').readFileSync(path.resolve(__dirname, '../src/index.template.html'), 'utf-8') // （可选）页面模板
   })
 const router = new Router()
-router.all('/*', function(ctx, next){
-  renderer.renderToString(ctx, (err, html) => {
-    console.log(err)
-    console.log(html)
+router.all('/*', async function(ctx, next){
+  await renderer.renderToString(ctx, (err, html) => {
     if (err) {
       console.log(err)
     } else {
-      ctx.body = html
+      console.log("html: "+ html)
+      ctx.response.body = html
     }
   })
+  console.log(ctx.body)
+  await next()
 })
 module.exports = router
