@@ -12,16 +12,14 @@ const renderer = createBundleRenderer(serverBundleJson, {
   })
 const router = new Router()
 router.all('/*', function(ctx, next){
-    // createApp(ctx).then(app => {
-        renderer.renderToString(ctx, (err, html) => {
-          if (err) {
-            console.log(err)
-          } else {
-            ctx.body = html
-          }
-        })
-    // }).catch( err => {
-    //     console.log(err);
-    // })
+  renderer.renderToString(ctx, (err, html) => {
+    console.log(err)
+    console.log(html)
+    if (err) {
+      console.log(err)
+    } else {
+      ctx.body = html
+    }
+  })
 })
 module.exports = router
