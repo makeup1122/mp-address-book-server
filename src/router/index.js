@@ -4,7 +4,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Index from "../views/index.vue";
 const User = {
-	template: '<div>User</div>'
+	template: '<div>User.vue</div>'
   }
 // const Router = require('vue-router')
 Vue.use(VueRouter)
@@ -20,7 +20,7 @@ export default function createRouter() {
 				meta: {
 					role: 'super-admin'
 				},
-				component: User
+				component: Index
 			},
 			{
 				path: "/",

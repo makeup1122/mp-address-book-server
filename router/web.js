@@ -12,15 +12,11 @@ const renderer = createBundleRenderer(serverBundleJson, {
   })
 const router = new Router()
 router.all('/*', async function(ctx, next){
-  await renderer.renderToString(ctx, (err, html) => {
-    if (err) {
-      console.log(err)
-    } else {
-      console.log("html: "+ html)
-      ctx.response.body = html
-    }
+   await renderer.renderToString(ctx).then(function(html){
+    ctx.body = html
+  }).catch(function(err){
+    console.log(err)
   })
-  console.log(ctx.body)
-  await next()
+  next()
 })
 module.exports = router
