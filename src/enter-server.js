@@ -1,6 +1,6 @@
-import createApp from "./main";
+const createApp = require("./main")
 
-export default function (context) {
+module.exports =  function (context) {
 	return new Promise((resolve, reject) => {
 		const { app, router } = createApp();
 		// 设置服务器端 router 的位置

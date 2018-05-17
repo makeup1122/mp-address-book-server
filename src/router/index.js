@@ -1,13 +1,12 @@
 // router.js
-import Vue from 'vue'
-// const Vue = require('vue')
-import VueRouter from 'vue-router'
+const Vue = require('vue')
+const VueRouter = require('vue-router')
 // import Index from "../views/index.vue"
 function _import(file) {
 	return require('../views/' + file + '.vue').default
 }
 Vue.use(VueRouter)
-export default function createRouter() {
+module.exports = function createRouter() {
 	return new VueRouter({
 		mode: 'history',
 		base: '/web/',
