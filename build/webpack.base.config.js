@@ -12,6 +12,14 @@ module.exports = {
                 loader: 'babel-loader'
             },
             {
+                test: /\.css$/,
+                loader: ['vue-style-loader', 'css-loader']
+            },
+            {
+                test: /\.styl$/,
+                loader: ['vue-style-loader', 'css-loader', 'stylus-loader']
+            },
+            {
                 test: /\.vue$/,
                 loader: 'vue-loader',
                 options: {
@@ -19,7 +27,7 @@ module.exports = {
                     preserveWhitespace: false
                   }
                 }
-              }
+            }
         ]
     },
     // 这是将服务器的整个输出

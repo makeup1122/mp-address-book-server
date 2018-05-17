@@ -1,6 +1,6 @@
 <template>
   <div>
-      index.vue
+      index.vue1
   </div>
 </template>
 <script>

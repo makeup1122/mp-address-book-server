@@ -1,9 +1,11 @@
-// import Vue from 'vue'
+import 'babel-polyfill'
 import Vue from "vue";
-// import { createRouter } from './router/index'
 import createRouter from "./router/index";
-// import App from './App.vue'
+import Vuetify from 'vuetify'
+import 'vuetify/dist/vuetify.min.css'
 import App from "./App.vue";
+
+Vue.use(Vuetify)
 export default function createApp() {
 	const router = createRouter();
 	const app = new Vue({

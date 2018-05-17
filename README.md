@@ -6,6 +6,7 @@
 * [nodeJS Sqlite3说明文档](https://github.com/mapbox/node-sqlite3/wiki)
     * [Sqlite3可视化工具：sqlitestudio](https://sqlitestudio.pl/index.rvt)
     * [Sqlite3语法](http://www.runoob.com/sqlite/sqlite-tutorial.html)
+* [前端框架Vuetify](https://vuetifyjs.com)
 * 开发调试
     * [Supervisor](http://supervisord.org/) 
     * [PostMan](https://www.getpostman.com)
