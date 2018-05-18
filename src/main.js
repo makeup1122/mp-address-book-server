@@ -1,10 +1,10 @@
-const Vue = require("vue")
-const createRouter = require("./router/index")
-const Vuetify = require('vuetify')
-const App = require("./App.vue")
-require('vuetify/dist/vuetify.min.css')
+import Vue from "vue";
+import createRouter from "./router/index";
+import Vuetify from "vuetify";
+import App from "./App.vue";
+import "vuetify/dist/vuetify.min.css";
 Vue.use(Vuetify)
-module.exports = function createApp() {
+export default function createApp() {
 	const router = createRouter();
 	const app = new Vue({
 		router,
