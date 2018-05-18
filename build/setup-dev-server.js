@@ -23,7 +23,7 @@ module.exports = function setupDevServer(cb){
           })
         }
       }
-    template = fs.readFileSync(path.resolve(__dirname, '../src/index.template.html'), 'utf-8')
+    template = fs.readFileSync(path.resolve(__dirname, '../src/index.server.template.html'), 'utf-8')
     // watch and update server renderer
     const serverCompiler = webpack(serverConfig)
     const mfs = new MFS()

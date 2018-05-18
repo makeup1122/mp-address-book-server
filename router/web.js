@@ -2,7 +2,7 @@ const Router = require('koa-router');
 const path = require('path')
 const { createBundleRenderer } = require('vue-server-renderer')
 // SSR基础页面模板
-const template = require('fs').readFileSync(path.resolve(__dirname, '../src/index.template.html'), 'utf-8')
+const template = require('fs').readFileSync(path.resolve(__dirname, '../src/index.server.template.html'), 'utf-8')
 // 判断运行环境类别
 const isProd = process.env.NODE_ENV === 'production'
 function createRenderer (bundle, options) {
