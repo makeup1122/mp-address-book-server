@@ -4,6 +4,7 @@ const merge = require('webpack-merge')
 const BaseConfig = require('./webpack.base.config')
 // Plugins
 const nodeExternals = require('webpack-node-externals')
+const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
 
 // Functions
 function resolve (dir) {
@@ -11,7 +12,6 @@ function resolve (dir) {
   }
 // Config 
 const config = merge(BaseConfig, {
-    mode: 'none',
     entry: './src/enter-server.js',
     // 这允许 webpack 以 Node 适用方式(Node-appropriate fashion)处理动态导入(dynamic import)，
     // 并且还会在编译 Vue 组件时，
@@ -43,7 +43,10 @@ const config = merge(BaseConfig, {
         // 你可以在这里添加更多的文件类型。例如，未处理 *.vue 原始文件，
         // 你还应该将修改 `global`（例如 polyfill）的依赖模块列入白名单
         whitelist: /\.css$/
-    })
+    }),
+    plugins: [
+        new VueSSRServerPlugin()
+    ]
 })
 
 module.exports = config
