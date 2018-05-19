@@ -4,6 +4,10 @@ const LRU = require('lru-cache')
 const { createBundleRenderer } = require('vue-server-renderer')
 // SSR基础页面模板
 const template = require('fs').readFileSync(path.resolve(__dirname, '../src/index.server.template.html'), 'utf-8')
+// 客户端文件清单
+// const clientManifest = require('fs').readFileSync(path.resolve(__dirname,'../dist/vue-ssr-client-manifest.json'),'utf-8')
+let clientManifest = require('../dist/vue-ssr-client-manifest.json')
+console.log
 // 判断运行环境类别
 const isProd = process.env.NODE_ENV === 'production'
 function createRenderer (bundle, options) {
@@ -17,7 +21,8 @@ function createRenderer (bundle, options) {
     // this is only needed when vue-server-renderer is npm-linked
     basedir: resolve('../dist'),
     // recommended for performance
-    runInNewContext: false
+    runInNewContext: false,
+    clientManifest: clientManifest
   }))
 }
 let renderer
@@ -32,7 +37,8 @@ if(!isProd){
   // 生产环境，直接读取生成的bundle.json文件
   const serverBundleJson = path.resolve(__dirname,'../dist/vue-ssr-server-bundle.json')
   renderer = createBundleRenderer(serverBundleJson, {
-    template: template // （可选）页面模板
+    template: template, // （可选）页面模板
+    clientManifest: clientManifest
   })
 }
 

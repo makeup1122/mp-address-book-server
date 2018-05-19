@@ -21,8 +21,6 @@ const config = merge(BaseConfig, {
     devtool: '#source-map',
     // 此处告知 server bundle 使用 Node 风格导出模块(Node-style exports)
     output: {
-        path: path.resolve(__dirname,'../dist'),
-        filename: '[name].js',
         libraryTarget: 'commonjs2'
     },
     module: {

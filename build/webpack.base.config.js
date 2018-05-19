@@ -4,6 +4,11 @@ const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const resolve = (file) => path.resolve(__dirname,'..', file)
 module.exports = {
     mode: 'none',
+    output: {
+        path: path.resolve(__dirname,'../dist'),
+        filename: '[name].[chunkhash].js',
+        publicPath: '/'
+    },
     module: {
         noParse: /es6-promise\.js$/, // 防止 webpack 解析那些任何与给定正则表达式相匹配的文件。
         rules: [
