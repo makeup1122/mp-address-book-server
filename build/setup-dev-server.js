@@ -42,6 +42,7 @@ const readFile = (fs, file) => {
 }
 module.exports = function setupDevServer(app,cb){
   let bundle
+  let clientManifest
   let template
   let ready
   const readyPromise = new Promise(r => { resolve = r })
@@ -49,7 +50,8 @@ module.exports = function setupDevServer(app,cb){
       if (bundle) {
           resolve()
         cb(bundle, {
-          template
+          template,
+          clientManifest
         })
       }
     }

@@ -26,7 +26,7 @@
       clipped-left
     >
       <v-toolbar-side-icon @click.stop="onLeftMenuClick"></v-toolbar-side-icon>
-      <v-toolbar-title>Menu1</v-toolbar-title>
+      <v-toolbar-title>Menu12</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
     <v-footer color="blue-grey" class="white--text" app>
@@ -45,11 +45,10 @@ export default {
     }
   },
   mounted: ()=>{
-    console.log('mounted')
+    // console.log('mounted')
   },
   methods: {
     onLeftMenuClick(){
-      console.log(this.drawer)
       this.drawer = !this.drawer
     }
   },
