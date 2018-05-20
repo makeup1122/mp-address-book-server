@@ -26,11 +26,11 @@
       clipped-left
     >
       <v-toolbar-side-icon @click.stop="onLeftMenuClick"></v-toolbar-side-icon>
-      <v-toolbar-title>Menu</v-toolbar-title>
+      <v-toolbar-title>Menu1</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
     <v-footer color="blue-grey" class="white--text" app>
-      <span>Address Book Manager@Goingmerry</span>
+      <span>Address Book Manager</span>
       <v-spacer></v-spacer>
       <span>&copy; 2018</span>
     </v-footer>

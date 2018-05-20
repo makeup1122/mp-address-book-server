@@ -9,7 +9,7 @@ Vue.use(VueRouter)
 export default function createRouter() {
 	return new VueRouter({
 		mode: 'history',
-		base: '/web/',
+		// base: '/web/',
 		routes: [
 			{ path: '/web/login', name: 'Login', meta: { role: 'super-admin' }, component: _import('public/login') },
 			{ path: '/web/index', name: 'Index', meta: { role: 'super-admin' }, component: _import('index/index') },
