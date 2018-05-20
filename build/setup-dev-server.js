@@ -7,48 +7,25 @@ const webpackHot = require('webpack-hot-middleware')
 const PassThrough = require('stream').PassThrough;
 const serverConfig = require('./webpack.server.config')
 const clientConfig = require('./webpack.client.config')
+const devMiddleware = require('./koa-middleware/dev')
+const hotMiddleware = require('./koa-middleware/hot')
 const readFile = (fs, file) => {
     try {
       return fs.readFileSync(path.join(serverConfig.output.path, file), 'utf-8')
-    } catch (e) {}
-  }
-  const devMiddleware = (compiler, opts) => {
-    const middleware = webpackDev(compiler, opts)
-      return async (ctx, next) => {
-          await middleware(ctx.req, {
-              end: (content) => {
-                  ctx.body = content
-              },
-              setHeader: (name, value) => {
-                  ctx.set(name, value)
-              }
-          }, next)
-      }
-  }
-  const hotMiddleware = (compiler, opts) => {
-    const middleware = webpackHot(compiler, opts);
-    return async (ctx, next) => {
-        let stream = new PassThrough()
-        ctx.body = stream
-        await middleware(ctx.req, {
-            write: stream.write.bind(stream),
-            writeHead: (status, headers) => {
-                ctx.status = status
-                ctx.set(headers)
-            }
-        }, next)
+    } catch (e) {
+      console.log(e)
     }
-    
-}
+  }
 module.exports = function setupDevServer(app,cb){
   let bundle
   let clientManifest
   let template
   let ready
-  const readyPromise = new Promise(r => { resolve = r })
+  const readyPromise = new Promise(r => { ready = r })
   const update = () => {
-      if (bundle) {
-          resolve()
+      if (bundle && clientManifest) {
+        ready()
+        console.log('callback')
         cb(bundle, {
           template,
           clientManifest
@@ -57,33 +34,36 @@ module.exports = function setupDevServer(app,cb){
     }
   // 客户端
   // modify client config to work with hot middleware
-  clientConfig.entry.app = ['webpack-hot-middleware/client?noInfo=true&reload=true', clientConfig.entry.app]
+  clientConfig.entry.app = ['webpack-hot-middleware/client', clientConfig.entry.app]
   clientConfig.output.filename = '[name].js'
   clientConfig.plugins.push(
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
   )
-
   // dev middleware
   const clientCompiler = webpack(clientConfig)
-  // const devMiddleware = require('webpack-dev-middleware')(clientCompiler, {
-  //   publicPath: clientConfig.output.publicPath,
-  //   noInfo: true
-  // })
-  
-  app.use(devMiddleware(clientCompiler, {
+  const dd = devMiddleware(clientCompiler, {
     publicPath: clientConfig.output.publicPath,
     noInfo: true
-  }))
-  clientCompiler.plugin('done', () => {
-    const fs = devMiddleware.fileSystem
-    const readFile = file => fs.readFileSync(path.join(clientConfig.output.path, file), 'utf-8')
-    clientManifest = JSON.parse(readFile('vue-ssr-client-manifest.json'))
-    if (bundle) {
-      ready(bundle, {
-        clientManifest
-      })
+  })
+  app.use((ctx, next) => dd(ctx.req, {
+    end: (content) => {
+      ctx.body = content
+    },
+    setHeader(){
+      ctx.set.apply(ctx, arguments)
     }
+  }, next)
+)
+  clientCompiler.plugin('done', (stats) => {
+    console.log('clientCompiler is done!')
+    stats = stats.toJson()
+    stats.errors.forEach(err => console.error(err))
+    stats.warnings.forEach(err => console.warn(err))
+    if (stats.errors.length) return
+    clientManifest = JSON.parse(readFile(dd.fileSystem,'vue-ssr-client-manifest.json'));
+    // console.log(clientManifest)
+    update()
   })
 
   // hot middleware

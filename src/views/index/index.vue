@@ -26,7 +26,7 @@
       clipped-left
     >
       <v-toolbar-side-icon @click.stop="onLeftMenuClick"></v-toolbar-side-icon>
-      <v-toolbar-title>Menu12</v-toolbar-title>
+      <v-toolbar-title>Menu12345</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
     <v-footer color="blue-grey" class="white--text" app>

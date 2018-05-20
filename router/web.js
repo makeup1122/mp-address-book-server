@@ -7,6 +7,7 @@ const { createBundleRenderer } = require('vue-server-renderer')
 const app = new Koa()
 // SSR基础页面模板
 const template = require('fs').readFileSync(path.resolve(__dirname, '../src/index.server.template.html'), 'utf-8')
+const resolve = (file) => path.resolve(__dirname, file)
 
 // 判断运行环境类别
 const isProd = process.env.NODE_ENV === 'production'
@@ -43,7 +44,6 @@ if(!isProd){
     clientManifest: clientManifest
   })
 }
-
 const router = new Router()
 router.all('/*', async function(ctx, next){
     await renderer.renderToString(ctx).then(function(html){
