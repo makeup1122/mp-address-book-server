@@ -7,7 +7,7 @@ function _import(file) {
 }
 Vue.use(VueRouter)
 export default function createRouter() {
-	return new VueRouter({
+	const router = new VueRouter({
 		mode: 'history',
 		// base: '/web/',
 		routes: [
@@ -16,4 +16,5 @@ export default function createRouter() {
 			{ path: "/web", name: 'Root', meta: { role: 'super-admin' }, component: _import('index/index') },
 		]
 	});
+	return router
 }

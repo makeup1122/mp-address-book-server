@@ -4,9 +4,11 @@
   "description": "* [Koa2中文文档](https://koa.bootcss.com/)\r     * [Koa中间件资源列表](https://github.com/koajs/koa/wiki)\r     * [Koa-Router](https://github.com/alexmingoia/koa-router)\r * [nodeJS Sqlite3说明文档](https://github.com/mapbox/node-sqlite3/wiki)\r     * [Sqlite3可视化工具：sqlitestudio](https://sqlitestudio.pl/index.rvt)",
   "main": "index.js",
   "dependencies": {
+    "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
     "cross-env": "^5.1.5",
     "friendly-errors-webpack-plugin": "^1.7.0",
+    "js-cookie": "^2.2.0",
     "koa": "^2.5.0",
     "koa-body": "^2.5.0",
     "koa-router": "^7.4.0",

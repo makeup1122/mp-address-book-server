@@ -1,10 +1,16 @@
 import createApp from "./main";
+const whiteList = ['/web/login'] // no redirect whitelist
 
 export default function (context) {
 	return new Promise((resolve, reject) => {
 		const { app, router, store } = createApp();
+		
+		if(!context.cookies.get('AddressToken') && whiteList.indexOf(context.path) === -1){
+			context.url = '/web/login'
+		}
 		// 设置服务器端 router 的位置
 		router.push(context.url);
+		
 		// 等到 router 将可能的异步组件和钩子函数解析完
 		router.onReady(() => {
 			const matchedComponents = router.getMatchedComponents();
