@@ -12,6 +12,7 @@ export default function createRouter() {
 		// base: '/web/',
 		routes: [
 			{ path: '/web/login', name: 'Login', meta: { role: 'super-admin' }, component: _import('public/login') },
+			{ path: '/web/members/:tablexid', name: "Members", props: true, meta: {role: 'super-admin'}, component: _import('index/members')},
 			{ path: '/web/index', name: 'Index', meta: { role: 'super-admin' }, component: _import('index/index') },
 			{ path: "/web", name: 'Root', meta: { role: 'super-admin' }, component: _import('index/index') },
 		]

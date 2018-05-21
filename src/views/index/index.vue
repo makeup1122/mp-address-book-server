@@ -1,65 +1,68 @@
 <template>
-  <v-app id="inspire">
-    <v-navigation-drawer
-      v-model="drawer"
-      fixed
-      left
-      clipped
-      app
-    >
-      <v-list dense>
-        <v-list-tile @click.stop="left = !left">
-          <v-list-tile-action>
-            <v-icon>exit_to_app</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Open Temporary Drawer left </v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
-     <v-toolbar
-      color="blue-grey"
-      dark
-      fixed
-      app
-      clipped-left
-    >
-      <v-toolbar-side-icon @click.stop="onLeftMenuClick"></v-toolbar-side-icon>
-      <v-toolbar-title>Menu12345</v-toolbar-title>
-      <v-spacer></v-spacer>
-    </v-toolbar>
-    <v-footer color="blue-grey" class="white--text" app>
-      <span>Address Book Manager</span>
-      <v-spacer></v-spacer>
-      <span>&copy; 2018</span>
-    </v-footer>
-  </v-app>
+    <v-data-table
+      :header="header"
+      :items="tableData"
+      hide-actions
+      class="elevation-1"> 
+      <template slot="items" slot-scope="props">
+        <td class="text-xs-center">{{ props.item.xid }}</td>
+        <td class="text-xs-center">{{ props.item.tablename }}</td>
+        <td class="text-xs-center">
+          <v-btn icon  @click="editItem(props.item)"><v-icon color="teal">edit</v-icon></v-btn>
+          <v-btn icon  @click="members(props.item)"><v-icon color="">people</v-icon></v-btn>
+          <v-btn icon  @click="deleteItem(props.item)"><v-icon color="pink">delete</v-icon></v-btn>
+        </td>
+      </template>
+    </v-data-table>
 </template>
 <script>
+import { fetchList } from '@/api/classes'
 export default {
   data() {
     return {
-      drawer: false,
-      left: null
+      tableData: [],
+      header: [
+        { text:'XID',value:"xid"},
+        { text:'名称',value:'tablename'},
+        { text:'操作',value:"xid"}
+      ]
     }
   },
-  mounted: ()=>{
+  created: function(){
+    
+  },
+  mounted: function(){
+    this.getData()
     // console.log('mounted')
   },
   methods: {
-    onLeftMenuClick(){
-      this.drawer = !this.drawer
+    getData(){
+      var that = this
+      fetchList().then(function(res){
+        that.tableData = res.data
+      }).catch(function(err){
+        console.log(err)
+      })
+    },
+    members(item) {
+      this.$router.push('/web/members/' + item.xid)
+    },
+    editItem(item){
+
+    },
+    deleteItem(item){
+      const index = this.tableData.indexOf(item)
+      confirm('Are you sure you want to delete this item?') && this.tableData.splice(index, 1)
     }
   },
   asyncData ({ store, route }) {
     // 触发 action 后，会返回 Promise
-    return store.dispatch('fetchItem', 1)
+    // return store.dispatch('fetchClasses')
   },
   computed: {
     // 从 store 的 state 对象中的获取 item。
     item () {
-      return this.$store.state.items[1]
+      // return this.$store.state.classes
     }
   }
 }

@@ -195,3 +195,29 @@ exports.updateDetail = function(body){
         })
     })
 }
+
+
+// add by libing 
+
+exports.getClaseees = function(){
+    return new Promise(function(resolve,reject){
+        db.all('SELECT * FROM tablelist;', function(err,rows){
+            if(!err){
+                resolve(rows)
+            }else{
+                reject(err)
+            }
+        })
+    })
+}
+exports.getMembers = function(tablexid){
+    return new Promise(function(resolve,reject){
+        db.all('SELECT * FROM detaillist where tablexid = '+ tablexid + ';', function(err,rows){
+            if(!err){
+                resolve(rows)
+            }else{
+                reject(err)
+            }
+        })
+    })
+}
