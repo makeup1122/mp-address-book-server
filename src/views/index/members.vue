@@ -1,6 +1,6 @@
 <template>
     <v-data-table
-      :header="header"
+      :headers="header"
       :items="tableData"
       hide-actions
       class="elevation-1"> <template slot="items" slot-scope="props">
@@ -25,13 +25,13 @@ export default {
         return {
             tableData:[],
             header: [
-                { text:'ID',value:"xid"},
-                { text:'表索引',value:'tablexid'},
-                { text:'姓名',value:"name"},
-                { text:'电话',value:'mobile'},
-                { text: '城市',value:'city'},
-                { text: '状态',value:'status'},
-                { text:'操作',value:"xid"}
+                { align:'center',text:'ID',value:"xid"},
+                { align:'center',text:'表索引',value:'tablexid'},
+                { align:'center',text:'姓名',value:"name"},
+                { align:'center',text:'电话',value:'mobile'},
+                { align:'center',text: '城市',value:'city'},
+                { align:'center',text: '状态',value:'status'},
+                { align:'center',text:'操作',value:"xid"}
             ]
         }
     },
@@ -48,10 +48,11 @@ export default {
             })
         },
         editItem(item){
-
+            
         },
         deleteItem(item){
-
+            const index = this.tableData.indexOf(item)
+            confirm('Are you sure you want to delete this item?') && this.tableData.splice(index, 1)
         }
     }
 }

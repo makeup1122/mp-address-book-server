@@ -27,7 +27,7 @@ function createRenderer (bundle, options) {
 }
 let renderer
 let readyPromise
-if(!isProd){
+if(isProd){
   readyPromise = require('../build/setup-dev-server')(
     app,
     (bundle, options) => {

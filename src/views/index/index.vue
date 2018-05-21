@@ -1,6 +1,6 @@
 <template>
     <v-data-table
-      :header="header"
+      :headers="header"
       :items="tableData"
       hide-actions
       class="elevation-1"> 
@@ -22,9 +22,9 @@ export default {
     return {
       tableData: [],
       header: [
-        { text:'XID',value:"xid"},
-        { text:'名称',value:'tablename'},
-        { text:'操作',value:"xid"}
+        { align:'center',text:'XID',value:"xid"},
+        { align:'center',text:'名称',value:'tablename'},
+        { align:'center',text:'操作',value:"xid"}
       ]
     }
   },
